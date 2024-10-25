@@ -23,15 +23,19 @@ class RefreshTokenService{
 
 
     async updateRevoke(token){
-
-        //cari token dulu di fungsi logout. 
-        //jika token ditemukan, maka update field revoke menjadi true.
-        //jika token tidak ditemukan, maka throw error.
         try {
-            const refreshToken = await RefreshToken.findOneAndUpdate(token, {revoke: true});
+            const refreshToken = await RefreshToken.findOneAndUpdate( {refreshToken: token}, { $set: {revoke: true }} );
             return refreshToken;
         } catch (error) {
             console.error(error);
+        }
+    }
+
+    async deleteRefreshToken(token){
+        try {
+            await RefreshToken.deleteOne({refreshToken: token});
+        } catch (error) {
+            console.log(error);
         }
     }
 

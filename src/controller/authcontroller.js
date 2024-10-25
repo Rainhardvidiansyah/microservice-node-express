@@ -87,7 +87,20 @@ class AuthenticationController{
         res.status(200).json({
             'New access token': newAccessToken
         });
+    }
 
+    logout(req, res){
+        const token = req.cookies.refreshToken;
+        if(!token){
+            return res.status(401).send('Token not provided');
+        }
+
+        refreshTokenService.deleteRefreshToken(token)
+        .then(() => {
+            console.log(`Refresh token just got deleted: ${token}`);
+            return res.status(200).send('You are now logged out')})
+        .catch(err => console.error(err));
+    
     }
 
 

@@ -22,10 +22,12 @@ router.get('/all-articles', articleController.getAllArtice);
 //AUTHENTICATION
 router.post('/auth/login', authenticationController.login);
 router.get('/auth/refresh-token', tokenMiddleware.verifyRefreshToken, authenticationController.createNewAccestToken);
+router.delete('/logout', tokenMiddleware.veryfyToken, authenticationController.logout);
 
 
 router.get('/test-middleware', tokenMiddleware.veryfyToken, (req, res) => {
-    res.status(200).send('Lolos, hei kamu... ' + req.email);
+    const refreshToken = req.cookies.refreshToken;
+    res.status(200).send('Lolos, hei kamu... ' + req.email + ' memiliki token ' + refreshToken);
 });
 
 router.get('/testing-router', (req, res) => {
