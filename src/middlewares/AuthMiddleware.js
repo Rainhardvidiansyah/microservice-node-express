@@ -7,7 +7,7 @@ class TokenMiddleware{
 
     constructor(){}
 
-    veryfyToken(req, res, next){
+    verifyToken(req, res, next){
 
     try {
         
@@ -57,6 +57,7 @@ class TokenMiddleware{
                 return res.status(403).send('Invalid token');
             }
 
+            req.id = decodedRefreshToken.id;
             req.email = decodedRefreshToken.email;
 
             next();
