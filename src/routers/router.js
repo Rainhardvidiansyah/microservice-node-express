@@ -3,7 +3,8 @@ const router = express.Router();
 const productcontroller = require('../controller/productcontroller');
 const articleController = require('../controller/articlecontroller');
 const authenticationController = require('../controller/authcontroller');
-const tokenMiddleware = require('../middlewares/AuthMiddleware');
+const tokenMiddleware = require('../middlewares/authmiddleware');
+const getAndSaveUserActivity = require('../middlewares/logactivitymiddleware');
 
 router.get('/api/v1/products', (req, res) => {
     res.send('oke di sini');
@@ -22,16 +23,17 @@ router.get('/all-articles', articleController.getAllArtice);
 //AUTHENTICATION
 router.post('/auth/login', authenticationController.login);
 router.get('/auth/refresh-token', tokenMiddleware.verifyRefreshToken, authenticationController.createNewAccestToken);
-router.delete('/logout', tokenMiddleware.veryfyToken, authenticationController.logout);
+router.delete('/logout', tokenMiddleware.verifyToken, authenticationController.logout);
 
 
-router.get('/test-middleware', tokenMiddleware.veryfyToken, (req, res) => {
+router.get('/test-middleware', tokenMiddleware.verifyToken, (req, res) => {
     const refreshToken = req.cookies.refreshToken;
-    res.status(200).send('Lolos, hei kamu... ' + req.email + ' memiliki token ' + refreshToken);
+    res.status(200).send(`${req.email} memiliki token: ${refreshToken}`);
 });
 
-router.get('/testing-router', (req, res) => {
-    res.status(200).send('Lolos');
+router.get('/test-header', (req, res) => {
+    res.setHeader('x-custom-header', 'test');
+    res.send('Hello from the head endpoint');
 });
 
 router.get('/test-cookie', (req, res) => {
@@ -39,6 +41,8 @@ router.get('/test-cookie', (req, res) => {
     res.send('Cookie set');
 });
 
+
+router.get('/log-user', tokenMiddleware.verifyRefreshToken, tokenMiddleware.verifyToken, getAndSaveUserActivity, articleController.getAllArtice);
 
 
 module.exports = router;
