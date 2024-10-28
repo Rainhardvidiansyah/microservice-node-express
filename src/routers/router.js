@@ -1,10 +1,13 @@
 const express = require('express');
 const router = express.Router();
+const fs = require('fs');
+const path = require('path');
 const productcontroller = require('../controller/productcontroller');
 const articleController = require('../controller/articlecontroller');
 const authenticationController = require('../controller/authcontroller');
 const tokenMiddleware = require('../middlewares/authmiddleware');
 const getAndSaveUserActivity = require('../middlewares/logactivitymiddleware');
+const upload = require('../service/multerservice');
 
 router.get('/api/v1/products', (req, res) => {
     res.send('oke di sini');
@@ -43,6 +46,25 @@ router.get('/test-cookie', (req, res) => {
 
 
 router.get('/log-user', tokenMiddleware.verifyRefreshToken, tokenMiddleware.verifyToken, getAndSaveUserActivity, articleController.getAllArtice);
+
+//UPLOAD
+router.post('/upload', upload.single('image'), (req, res) => {
+    
+    if(!req.file){
+        console.log('No file uploaded.');
+        return res.status(400).send('No file uploaded.');
+    }
+    
+    let imageObject = {
+        image: {
+            contentType: 'image/jpeg'
+        }
+    }
+    console.log(`req file: ${req.file.filename}`);
+    console.log(`image obj: ${imageObject.image}`);
+    
+    return res.status(200).send('File uploaded successfully!');
+});
 
 
 module.exports = router;
