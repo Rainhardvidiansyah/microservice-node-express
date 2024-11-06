@@ -12,7 +12,6 @@ const minioClient = new Minio.Client({
     useSSL: false,
     accessKey: minioAccessKey,
     secretKey: minioSecretKey
-
 });
 
 const getObject = (objectName) => {
