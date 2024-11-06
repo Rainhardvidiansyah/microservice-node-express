@@ -31,6 +31,15 @@ class RefreshTokenService{
         }
     }
 
+    async getRefreshTokenByToken(token){
+        try {
+            const refreshToken = await RefreshToken.findOne({refreshToken: token});
+            return refreshToken;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     async deleteRefreshToken(token){
         try {
             await RefreshToken.deleteOne({refreshToken: token});
